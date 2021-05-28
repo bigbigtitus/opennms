@@ -50,9 +50,13 @@ import org.opennms.newts.cassandra.search.ResourceIdSplitter;
  */
 public final class TimeseriesUtils {
 
+    public static final boolean USE_TS_FOR_STRING_ATTRIBUTES = true; // TODO Patrick: remove when ok.
+
+    public static final String PREFIX_INDEX =  "_idx";
+    public static final String PREFIX_RESOURCE_LEVEL_ATTRIBUTE =  "_rla";
 
     public static final int WILDCARD_INDEX_NO = 2; // => node level
-    public static final String WILDCARD_INDEX = "_idx" + WILDCARD_INDEX_NO + "w";
+    public static final String WILDCARD_INDEX = PREFIX_INDEX + WILDCARD_INDEX_NO + "w";
 
     private static final ResourceIdSplitter s_splitter = new EscapableResourceIdSplitter();
 
@@ -61,10 +65,16 @@ public final class TimeseriesUtils {
      *
      * A resource path of the form [a, b, c, d] will be indexed with:
      * <ul>
-     * <li> _idx1: (a, 4)
-     * <li> _idx2: (a:b, 4)
-     * <li> _idx2w=(a:b,*) // wildcard index to query for all resources under that resource
-     * <li> _idx3: (a:b:c, 4)
+     * <li> _idx1: (a, 4)</li>
+     * <li> _idx2: (a:b, 4)</li>
+     * <li> _idx2w=(a:b,*)  wildcard index to query for all resources under that resource</li>
+     * <li> _idx3: (a:b:c, 4)</li>
+     * </ul>
+     *
+     * The index consists of the following elements:
+     * _idx   :( 2                                                    , 4
+     * prefix :( depth of index - how many path elements do we have?) , total amount of path elements
+     *
      */
     public static void addIndicesToAttributes(ResourcePath path, Map<String, String> attributes) {
         final List<String> elements = Arrays.asList(path.elements());
