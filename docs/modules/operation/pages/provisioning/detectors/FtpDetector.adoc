@@ -1,6 +1,7 @@
 = FTP Service Detector
 
-Use the FTP Service Detector to detect FTP services.
+The FtpDetector is able to validate ftp connection dial-up processes.
+The detector can test ftp server on multiple ports and specific login data.
 
 == Detector facts
 
