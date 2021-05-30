@@ -25,7 +25,7 @@ The detector can test ftp server on multiple ports and specific login data.
 [source,xml]
 ----
 <detector name="FTP" class="org.opennms.netmgt.provision.detector.simple.FtpDetector">
-  <parameter key="port"   value="21"/>
+  <parameter key="port" value="21"/>
   <parameter key="multilineIndicator" value="-"/>
 </detector>
 ----
