@@ -51,6 +51,7 @@ public class Netflow9MessageBuilder implements MessageBuilder {
 
     private Long flowActiveTimeoutFallback;
     private Long flowInactiveTimeoutFallback;
+    private Long flowSamplingIntervalFallback;
 
     public Netflow9MessageBuilder() {
     }
@@ -311,5 +312,13 @@ public class Netflow9MessageBuilder implements MessageBuilder {
 
     public void setFlowInactiveTimeoutFallback(final Long flowInactiveTimeoutFallback) {
         this.flowInactiveTimeoutFallback = flowInactiveTimeoutFallback;
+    }
+
+    public Long getFlowSamplingIntervalFallback() {
+        return this.flowSamplingIntervalFallback;
+    }
+
+    public void setFlowSamplingIntervalFallback(final Long flowSamplingIntervalFallback) {
+        this.flowSamplingIntervalFallback = flowSamplingIntervalFallback;
     }
 }
