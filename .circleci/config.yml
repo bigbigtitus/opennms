@@ -88,35 +88,6 @@ aliases:
       # setup_dct_env must have been run first because it provide DOCKER_CONTENT_TRUST_REPOSITORY_PASSPHRASE
       # that is required for loading the
       docker trust key load $KEY_FOLDER/$DCT_DELEGATE_KEY_NAME.key
-  - &minion-image-single-arch
-    matrix:
-      parameters:
-        architecture: [linux/amd64,linux/arm64,linux/arm/v7]
-    context: "docker-content-trust"
-    requires:
-      - tarball
-    filters:
-      branches:
-        only:
-          - jira/NMS-13318
-          - develop
-          - /^master-/
-          - /^release-/
-  - &minion-image-multi-arch
-    matrix:
-      parameters:
-        architecture: [linux/amd64,linux/arm64,linux/arm/v7]
-    context: "docker-content-trust"
-    requires:
-      - minion-image-single-arch
-    filters:
-      branches:
-        only:
-          - jira/NMS-13318
-          - develop
-          - /^master-/
-          - /^release-/
-
 docker_container_config: &docker_container_config
   executor: docker-executor
 
@@ -603,8 +574,31 @@ workflows:
       - tarball-assembly:
           requires:
             - build
-      - minion-image-single-arch: *minion-image-single-arch
-      - minion-image-multi-arch: *minion-image-multi-arch
+      - minion-image-single-arch:
+          matrix:
+            parameters:
+              architecture: [linux/amd64,linux/arm64,linux/arm/v7]
+          context: "docker-content-trust"
+          requires:
+            - tarball
+          filters:
+            branches:
+              only:
+                - jira/NMS-13318
+                - develop
+                - /^master-/
+                - /^release-/
+      - minion-image-multi-arch:
+          context: "docker-content-trust"
+          requires:
+            - minion-image-single-arch
+          filters:
+            branches:
+              only:
+                - jira/NMS-13318
+                - develop
+                - /^master-/
+                - /^release-/
       - horizon-rpm-build:
           requires:
             - build
