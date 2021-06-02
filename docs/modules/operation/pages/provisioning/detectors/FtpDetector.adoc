@@ -1,7 +1,7 @@
 = FTP Service Detector
 
 This detector lets you find FTP services for monitoring in your network.
-The detector can test ftp server on multiple ports and specific login data.
+It finds the FTP server on multiple ports and can also use login credentials for service detection.
 
 == Detector facts
 
