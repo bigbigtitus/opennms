@@ -61,14 +61,12 @@ public class TimeseriesSearcher {
 
     private static final Logger LOG = LoggerFactory.getLogger(TimeseriesSearcher.class);
 
-    private final TimeseriesStorageManager timeseriesStorageManager;
-
     private final Cache<Tag, Set<Metric>> indexMetricsByTag;
 
     @Autowired
     public TimeseriesSearcher(TimeseriesStorageManager timeseriesStorageManager,
                               @Named("timeseriesSearcherCache") final CacheConfig cacheConfig) {
-        this.timeseriesStorageManager = Objects.requireNonNull(timeseriesStorageManager, "timeseriesStorageManager must not be null");
+        Objects.requireNonNull(timeseriesStorageManager, "timeseriesStorageManager must not be null");
         indexMetricsByTag = new org.opennms.core.cache.CacheBuilder<>()
                 .withConfig(cacheConfig)
                 .withCacheLoader(new MetricCacheLoader(timeseriesStorageManager))
