@@ -57,7 +57,6 @@ import org.opennms.integration.api.v1.timeseries.immutables.ImmutableTag;
 import org.opennms.netmgt.model.ResourcePath;
 import org.opennms.netmgt.timeseries.TimeseriesStorageManager;
 import org.opennms.netmgt.timeseries.memory.InMemoryStorage;
-import org.opennms.netmgt.timeseries.meta.TimeSeriesMetaDataDao;
 import org.opennms.netmgt.timeseries.util.TimeseriesUtils;
 
 public class TimeseriesSearcherTest {
@@ -68,10 +67,9 @@ public class TimeseriesSearcherTest {
     @Test
     public void shouldFindAllMetrics() throws StorageException {
         TimeseriesStorageManager storageManager = Mockito.mock(TimeseriesStorageManager.class);
-        TimeSeriesMetaDataDao metaDataDao = Mockito.mock(TimeSeriesMetaDataDao.class);
         when(storageManager.get()).thenReturn(storage);
         CacheConfig cacheConfig = new CacheConfigBuilder().withName(TimeseriesSearcherTest.class.getSimpleName()).build();
-        searcher = new TimeseriesSearcher(storageManager, metaDataDao, cacheConfig);
+        searcher = new TimeseriesSearcher(storageManager, cacheConfig);
 
         Metric abc = createAndAddMetric("a/b", "c");
         Metric abcd1 = createAndAddMetric("a/b/c", "d1");

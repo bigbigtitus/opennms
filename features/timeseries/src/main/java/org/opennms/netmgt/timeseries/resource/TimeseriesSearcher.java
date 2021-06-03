@@ -34,9 +34,7 @@ import static org.opennms.netmgt.timeseries.util.TimeseriesUtils.toResourceId;
 
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -52,7 +50,6 @@ import org.opennms.integration.api.v1.timeseries.Tag;
 import org.opennms.integration.api.v1.timeseries.immutables.ImmutableTag;
 import org.opennms.netmgt.model.ResourcePath;
 import org.opennms.netmgt.timeseries.TimeseriesStorageManager;
-import org.opennms.netmgt.timeseries.meta.TimeSeriesMetaDataDao;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -66,15 +63,12 @@ public class TimeseriesSearcher {
 
     private final TimeseriesStorageManager timeseriesStorageManager;
 
-    private final TimeSeriesMetaDataDao metaDataDao;
-
     private final Cache<Tag, Set<Metric>> indexMetricsByTag;
 
     @Autowired
     public TimeseriesSearcher(TimeseriesStorageManager timeseriesStorageManager,
-                              TimeSeriesMetaDataDao metaDataDao, @Named("timeseriesSearcherCache") final CacheConfig cacheConfig) {
+                              @Named("timeseriesSearcherCache") final CacheConfig cacheConfig) {
         this.timeseriesStorageManager = Objects.requireNonNull(timeseriesStorageManager, "timeseriesStorageManager must not be null");
-        this.metaDataDao =  Objects.requireNonNull(metaDataDao, "metaDataDao must not be null");
         indexMetricsByTag = new org.opennms.core.cache.CacheBuilder<>()
                 .withConfig(cacheConfig)
                 .withCacheLoader(new MetricCacheLoader(timeseriesStorageManager))
@@ -88,15 +82,6 @@ public class TimeseriesSearcher {
         String wildcardValue = String.format("(%s,*)", wildcardPath);
         Tag wildCardTag = new ImmutableTag(WILDCARD_INDEX, wildcardValue);
         return getMetricFromCacheOrLoad(wildCardTag);
-    }
-
-    public Map<String, String> getResourceAttributes(ResourcePath path) {
-        try {
-            return metaDataDao.getForResourcePath(path);
-        } catch (StorageException e) {
-            LOG.warn("can not retrieve meta data for path: {}", path, e);
-        }
-        return new HashMap<>();
     }
 
     public Set<Metric> search(ResourcePath path, int depth) throws StorageException {
