@@ -942,7 +942,7 @@ jobs:
       - persist_to_workspace:
           root: ~/
           paths:
-            - project/target/tarballs/minion-*
+            - opennms-assemblies/minion/target/org.opennms.assemblies.minion-*-minion.tar.gz
 
   minion-image-single-arch:
     parameters:
