@@ -971,6 +971,7 @@ jobs:
       - run:
           name: Single-arch build & push
           command: |
+            cd opennms-container/minion
             ARCH="$(printf "<< parameters.architecture >>" | tr / -)"
             TAG="${MINION_IMAGE_VERSION}-${ARCH}"
             make DOCKER_ARCH="<< parameters.architecture >>" \
