@@ -46,6 +46,7 @@ import org.junit.Test;
 import org.opennms.integration.api.v1.timeseries.IntrinsicTagNames;
 import org.opennms.integration.api.v1.timeseries.Metric;
 import org.opennms.integration.api.v1.timeseries.StorageException;
+import org.opennms.integration.api.v1.timeseries.Tag;
 import org.opennms.integration.api.v1.timeseries.immutables.ImmutableMetric;
 import org.opennms.integration.api.v1.timeseries.immutables.ImmutableTag;
 import org.opennms.netmgt.model.OnmsAttribute;
@@ -229,19 +230,17 @@ public class TimeseriesResourceStorageDaoTest {
 
                 Set<Metric> metrics = new HashSet<>();
                 for (Entry<ResourcePath, Set<String>> entry : indexedPaths.entrySet()) {
-                    Map<String, String> attributes = Maps.newHashMap();
+                    Set<Tag> attributes = new HashSet<>();
                     // Build the indexed attributes and attempt to match them against the given query
                     TimeseriesUtils.addIndicesToAttributes(entry.getKey(), attributes);
-                    if (value.equals(attributes.get(field))) {
+                    if (attributes.contains(new ImmutableTag(field, value))) {
 
                         for(String name : entry.getValue()) {
                             ImmutableMetric.MetricBuilder metric =
                                     ImmutableMetric.builder()
                                     .intrinsicTag(IntrinsicTagNames.resourceId, toResourceId(entry.getKey()))
                                     .intrinsicTag(IntrinsicTagNames.name, name);
-                            attributes.entrySet().stream()
-                                    .map((e) -> new ImmutableTag(e.getKey(), e.getValue()))
-                                    .forEach(metric::metaTag);
+                            attributes.forEach(metric::metaTag);
                             metrics.add(metric.build());
                         }
                     }

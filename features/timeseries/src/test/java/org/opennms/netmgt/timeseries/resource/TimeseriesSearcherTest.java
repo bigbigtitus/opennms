@@ -38,9 +38,7 @@ import static org.mockito.Mockito.when;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import org.junit.Test;
@@ -50,10 +48,10 @@ import org.opennms.core.cache.CacheConfigBuilder;
 import org.opennms.integration.api.v1.timeseries.IntrinsicTagNames;
 import org.opennms.integration.api.v1.timeseries.Metric;
 import org.opennms.integration.api.v1.timeseries.StorageException;
+import org.opennms.integration.api.v1.timeseries.Tag;
 import org.opennms.integration.api.v1.timeseries.TimeSeriesStorage;
 import org.opennms.integration.api.v1.timeseries.immutables.ImmutableMetric;
 import org.opennms.integration.api.v1.timeseries.immutables.ImmutableSample;
-import org.opennms.integration.api.v1.timeseries.immutables.ImmutableTag;
 import org.opennms.netmgt.model.ResourcePath;
 import org.opennms.netmgt.timeseries.TimeseriesStorageManager;
 import org.opennms.netmgt.timeseries.memory.InMemoryStorage;
@@ -99,11 +97,9 @@ public class TimeseriesSearcherTest {
                 .intrinsicTag(IntrinsicTagNames.name, name);
 
         // add index tags
-        Map<String, String> attributes = new HashMap<>();
+        Set<Tag> attributes = new HashSet<>();
         TimeseriesUtils.addIndicesToAttributes(ResourcePath.fromString(path), attributes);
-        attributes.entrySet().stream()
-                .map(e -> new ImmutableTag(e.getKey(), e.getValue()))
-                .forEach(metricBuilder::metaTag);
+        attributes.forEach(metricBuilder::metaTag);
         Metric metric = metricBuilder.build();
 
         storage.store(Collections.singletonList(ImmutableSample.builder().metric(metric).time(Instant.now()).value(3.0).build()));

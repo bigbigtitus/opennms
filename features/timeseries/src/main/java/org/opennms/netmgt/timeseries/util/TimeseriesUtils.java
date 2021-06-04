@@ -32,11 +32,14 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.opennms.integration.api.v1.timeseries.IntrinsicTagNames;
 import org.opennms.integration.api.v1.timeseries.Sample;
+import org.opennms.integration.api.v1.timeseries.Tag;
 import org.opennms.integration.api.v1.timeseries.immutables.ImmutableMetric;
 import org.opennms.integration.api.v1.timeseries.immutables.ImmutableSample;
+import org.opennms.integration.api.v1.timeseries.immutables.ImmutableTag;
 import org.opennms.netmgt.model.ResourcePath;
 import org.opennms.netmgt.timeseries.resource.TimeseriesResourceStorageDao;
 import org.opennms.newts.cassandra.search.EscapableResourceIdSplitter;
@@ -74,16 +77,16 @@ public final class TimeseriesUtils {
      * prefix :( depth of index - how many path elements do we have?) , total amount of path elements
      *
      */
-    public static void addIndicesToAttributes(ResourcePath path, Map<String, String> attributes) {
+    public static void addIndicesToAttributes(ResourcePath path, Set<Tag> attributes) {
         final List<String> elements = Arrays.asList(path.elements());
         final int n = elements.size();
         for (int i = 0; i < n; i++) {
             final String id = s_splitter.joinElementsToId(elements.subList(0, i+1));
-            attributes.put("_idx" + i, String.format("(%s,%d)", id, n));
+            attributes.add(new ImmutableTag("_idx" + i, String.format("(%s,%d)", id, n)));
         }
         if(elements.size() >= WILDCARD_INDEX_NO) {
             final String id = s_splitter.joinElementsToId(elements.subList(0, WILDCARD_INDEX_NO));
-            attributes.put(String.format("_idx%sw", WILDCARD_INDEX_NO), String.format("(%s,*)", id));
+            attributes.add(new ImmutableTag(String.format("_idx%sw", WILDCARD_INDEX_NO), String.format("(%s,*)", id)));
         }
     }
 

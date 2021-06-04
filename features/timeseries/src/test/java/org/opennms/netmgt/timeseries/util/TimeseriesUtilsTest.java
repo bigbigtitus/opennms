@@ -31,12 +31,13 @@ package org.opennms.netmgt.timeseries.util;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.junit.Test;
+import org.opennms.integration.api.v1.timeseries.Tag;
 import org.opennms.netmgt.model.ResourcePath;
 
 public class TimeseriesUtilsTest {
@@ -50,9 +51,9 @@ public class TimeseriesUtilsTest {
     }
 
     private void test(final String path, String...expectedIndices) {
-        Map<String, String> attributes = new HashMap<>();
+        Set<Tag> attributes = new HashSet<>();
         TimeseriesUtils.addIndicesToAttributes(ResourcePath.fromString(path), attributes);
-        List<String> result = attributes.entrySet().stream()
+        List<String> result = attributes.stream()
                 .map(e -> (e.getKey() + "=" + e.getValue()))
                 .sorted()
                 .collect(Collectors.toList());
