@@ -939,11 +939,10 @@ jobs:
       - cache-oci:
           key: minion
           path: opennms-container/minion/images/
-      # any idea why we persisted this? seems like nothing later uses it
-      #- persist_to_workspace:
-      #    root: ~/
-      #    paths:
-      #      - project/target/tarballs
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - project/target/tarballs/minion-*
 
   minion-image-single-arch:
     parameters:
