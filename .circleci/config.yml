@@ -650,21 +650,21 @@ workflows:
       # spending cycles unless everything else passed
       - horizon-deb-build:
           requires:
-            - integration-test
+            - build
           filters:
             branches:
               ignore:
                 - /^merge-foundation.*/
       - minion-deb-build:
           requires:
-            - integration-test
+            - build
           filters:
             branches:
               ignore:
                 - /^merge-foundation.*/
       - sentinel-deb-build:
           requires:
-            - integration-test
+            - build
           filters:
             branches:
               ignore:
